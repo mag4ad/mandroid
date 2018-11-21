@@ -55,7 +55,6 @@ public class LoginActivity extends Activity implements AsyncTaskListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
-
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
