@@ -55,9 +55,6 @@ public class LoginActivity extends Activity implements AsyncTaskListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
-		mUser = "aleftik";
-		mPassword = "aleftik";
-
 
 		super.onCreate(savedInstanceState);
 
