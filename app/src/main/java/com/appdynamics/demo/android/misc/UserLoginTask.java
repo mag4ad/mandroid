@@ -19,6 +19,8 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import static com.appdynamics.eumagent.runtime.Instrumentation.leaveBreadcrumb;
+
 /**
  * Represents an asynchronous login/registration task used to authenticate
  * the user.
@@ -59,6 +61,9 @@ public class UserLoginTask extends AsyncTask<String, Void, Boolean> {
 
 	@Override
 	protected Boolean doInBackground(String... params) {
+		//MG Breadcrumb
+		leaveBreadcrumb("Login");
+
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(GlobalDataProvider.getInstance().getRestServiceUrl() +"user/login");
 

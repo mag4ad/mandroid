@@ -26,6 +26,9 @@ import com.appdynamics.demo.android.model.Item;
 import com.appdynamics.demo.android.service.http.DeleteRequestService;
 import com.appdynamics.demo.android.service.http.GetRequestService;
 
+import static com.appdynamics.eumagent.runtime.BreadcrumbVisibility.CRASHES_AND_SESSIONS;
+import static com.appdynamics.eumagent.runtime.Instrumentation.leaveBreadcrumb;
+
 public class CartFragment extends ListFragment {
     private static final String TAG = CartFragment.class.getName();
 
@@ -92,6 +95,8 @@ public class CartFragment extends ListFragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+        //MG Breadcrumb
+        leaveBreadcrumb("CartFragment:onAttach");
 
 		// Activities containing this fragment must implement its callbacks.
 		if (!(activity instanceof Callbacks)) {
@@ -120,6 +125,10 @@ public class CartFragment extends ListFragment {
 	@Override
 	public void onListItemClick( ListView l, View v, int position, long id)
 	{
+
+		//MG Breadcrumb
+		leaveBreadcrumb("onListItemClick");
+
         // Update list of checked items
         int index = myCheckedItems.indexOfKey(position);
 
@@ -219,6 +228,10 @@ public class CartFragment extends ListFragment {
 	}
 
 	public void checkoutCart(){
+
+        //MG Breadcrumb
+        leaveBreadcrumb("checkoutCart", CRASHES_AND_SESSIONS);
+
         Log.d(TAG, "checkoutCart(): currentCartItems size = " + currentCartItems.size());
 		if (currentCartItems!=null && currentCartItems.size()>0){
 			CheckoutTask checkoutReq = new CheckoutTask();

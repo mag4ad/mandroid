@@ -16,6 +16,9 @@ import com.appdynamics.demo.android.misc.UserPrefActivity;
 import com.appdynamics.demo.android.model.Item;
 import com.appdynamics.demo.android.tabs.CustomTabListener;
 
+import static com.appdynamics.eumagent.runtime.BreadcrumbVisibility.CRASHES_AND_SESSIONS;
+import static com.appdynamics.eumagent.runtime.Instrumentation.leaveBreadcrumb;
+
 /**
  * Unfortunately the two pane mode does not work because we are using
  * tabs in the page here which require fragments. So unless android and
@@ -138,6 +141,7 @@ public class ItemListActivity extends FragmentActivity implements
 	 */
 	@Override
 	public void onItemSelected(Item item) {
+		leaveBreadcrumb("ItemListActivity:onItemSelected", CRASHES_AND_SESSIONS);
 		selectedItem = item;
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by

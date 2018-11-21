@@ -15,6 +15,9 @@ import com.appdynamics.demo.android.misc.UserPrefActivity;
 import com.appdynamics.demo.android.model.Item;
 import com.appdynamics.demo.android.service.http.GetRequestService;
 
+import static com.appdynamics.eumagent.runtime.BreadcrumbVisibility.CRASHES_AND_SESSIONS;
+import static com.appdynamics.eumagent.runtime.Instrumentation.leaveBreadcrumb;
+
 /**
  * An activity representing a single Item detail screen. This activity is only
  * used on handset devices. On tablet-size devices, item details are presented
@@ -86,6 +89,7 @@ public class ItemDetailActivity extends FragmentActivity {
     }
 
     public void addToCartAction(View view) {
+        leaveBreadcrumb("ItemDeatilActivity:addToCartAction", CRASHES_AND_SESSIONS);
         addItemToCart(ItemListActivity.selectedItem);
 
         //Go back to list page

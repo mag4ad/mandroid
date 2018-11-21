@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.appdynamics.eumagent.runtime.AgentConfiguration;
+import com.appdynamics.eumagent.runtime.HttpRequestTracker;
 import com.appdynamics.eumagent.runtime.InfoPoint;
 import com.appdynamics.demo.android.misc.GlobalDataProvider;
 import com.appdynamics.demo.android.misc.PreferenceConstants;
@@ -21,6 +23,13 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
+import com.appdynamics.eumagent.runtime.Instrumentation;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import static com.appdynamics.eumagent.runtime.Instrumentation.leaveBreadcrumb;
+
 
 /**
  * Currently used to initialize the Universal Image Loader which allows some flexibility with the number of threads flag
@@ -28,6 +37,10 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
  * @author harsha.hegde
  *
  */
+
+
+
+
 public class CustomApplication extends Application {
 
 
@@ -36,6 +49,11 @@ public class CustomApplication extends Application {
     public void onCreate() {
         super.onCreate();
         setGlobalData();
+
+
+		//MG Breadcrumb
+		leaveBreadcrumb("onCreateApp");
+
 
         DisplayImageOptions options =
                 new DisplayImageOptions.Builder()
@@ -64,6 +82,13 @@ public class CustomApplication extends Application {
                         .defaultDisplayImageOptions(options) // default
                         .writeDebugLogs().build();
         ImageLoader.getInstance().init(config);
+        // Start the AppDynamics Instrumentation
+Instrumentation.start(AgentConfiguration.builder()
+        .withContext(getApplicationContext())
+        .withAppKey("AD-AAB-AAH-RYY")
+		//MG manually adding network request callback
+		.withNetworkRequestCallback(new myNetworkRequestCallback())
+        .build());
     }
 
     public void setGlobalData() {
@@ -98,4 +123,37 @@ public class CustomApplication extends Application {
 		GlobalDataProvider.getInstance().setImageUrl(image_url);
 
 	}
+
+
+
+	private static class myNetworkRequestCallback implements com.appdynamics.eumagent.runtime.NetworkRequestCallback  {
+		@Override
+		public boolean onNetworkRequest(HttpRequestTracker httpRequestTracker) {
+			String urlString = httpRequestTracker.getURL().toString();
+			Log.d("MG", "In networkRequestCallBack");
+
+			try {
+				URL url = new URL("http://appdynamics.com/AndroidCheckout");
+				if (urlString.contains("user/login")) {
+					Log.i("MG", "Ignoring log in urls");
+					// Ignore calls for Login
+					return false;
+				}
+				else if (urlString.contains("/rest/cart/co")) {
+					Log.i("MG", "Masking Checkout");
+					httpRequestTracker.withURL(url);
+					return true;
+				}
+
+
+			} catch (MalformedURLException e) {
+				return false;
+			}
+			return true;
+		}
+	}
+
+
+
+
 }

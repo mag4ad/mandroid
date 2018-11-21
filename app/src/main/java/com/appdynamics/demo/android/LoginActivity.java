@@ -25,6 +25,7 @@ import com.appdynamics.demo.android.misc.Constants;
 import com.appdynamics.demo.android.misc.GlobalDataProvider;
 import com.appdynamics.demo.android.misc.UserLoginTask;
 import com.appdynamics.demo.android.misc.UserPrefActivity;
+import com.appdynamics.eumagent.runtime.Instrumentation;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -41,6 +42,7 @@ public class LoginActivity extends Activity implements AsyncTaskListener {
 	private String mUser;
 	private String mPassword;
 
+
 	// UI references.
 	private EditText mUserView;
 	private EditText mPasswordView;
@@ -52,6 +54,11 @@ public class LoginActivity extends Activity implements AsyncTaskListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
+		mUser = "aleftik";
+		mPassword = "aleftik";
+
+
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
@@ -134,6 +141,11 @@ public class LoginActivity extends Activity implements AsyncTaskListener {
 			// form field with an error.
 			focusView.requestFocus();
 		} else {
+
+
+			Instrumentation.setUserData("androiduser", mUser);
+
+
 			// Show a progress spinner, and kick off a background task to
 			// perform the user login attempt.
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
